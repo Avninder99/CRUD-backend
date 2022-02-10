@@ -14,6 +14,7 @@ const bookSchema = new mongoose.Schema(
     pages: Number,
     isbn: {
       type: String,
+      unique: true,
       required: true,
     },
     category: {
