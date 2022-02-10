@@ -205,9 +205,10 @@ module.exports = {
         }
         return res.status(200).json(foundBooks);
       }).clone();
+    } else {
+      return res.status(200).json({
+        message: 'Books cannot be filtered on given base',
+      });
     }
-    return res.status(200).json({
-      message: 'Books cannot be filtered on given base',
-    });
   },
 };
