@@ -3,7 +3,6 @@ const Book = require('../models/Book');
 
 module.exports = {
   booksCaller: async (req, res) => {
-    // try {
     await Book.find({}, async (err, foundBooks) => {
       if (err) {
         return res.status(500).json({
@@ -12,15 +11,9 @@ module.exports = {
       }
       return res.status(200).json(foundBooks);
     }).clone();
-    // } catch (error) {
-    //   return res.status(500).json({
-    //     message: 'Server Error',
-    //   });
-    // }
   },
 
   booksCreate: async (req, res) => {
-    // try {
     await Book.findOne({ title: req.body.title }, async (err, foundBook) => {
       if (err) {
         return res.status(500).json({
@@ -61,15 +54,9 @@ module.exports = {
         });
       }
     }).clone();
-    // } catch (error) {
-    //   return res.status(500).json({
-    //     message: 'Server Error',
-    //   });
-    // }
   },
 
   bookRetriever: async (req, res) => {
-    // try {
     const { title } = req.params;
     await Book.findOne({ title }, async (err, foundBook) => {
       if (err) {
@@ -84,15 +71,9 @@ module.exports = {
       }
       return res.status(200).json(foundBook);
     }).clone();
-    // } catch (error) {
-    //   return res.status(500).json({
-    //     message: 'Server Error',
-    //   });
-    // }
   },
 
   bookUpdater: async (req, res) => {
-    // try {
     const { title } = req.params;
     await Book.findOne({ title }, async (err, foundBook) => {
       if (err) {
@@ -135,15 +116,9 @@ module.exports = {
         });
       }
     }).clone();
-    // } catch (error) {
-    //   return res.status(500).json({
-    //     message: 'Server Error',
-    //   });
-    // }
   },
 
   bookDeleter: async (req, res) => {
-    // try {
     const { title } = req.params;
     await Book.deleteOne({ title }).clone().then((result) => {
       if (result.deletedCount === 0) {
@@ -159,11 +134,6 @@ module.exports = {
         message: 'An error occured',
       });
     });
-    // } catch (error) {
-    //   return res.status(500).json({
-    //     message: 'Server Error',
-    //   });
-    // }
   },
 
   bookFilterCall: async (req, res) => {
