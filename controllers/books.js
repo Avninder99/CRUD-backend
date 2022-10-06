@@ -14,6 +14,8 @@ module.exports = {
   },
 
   booksCreate: async (req, res) => {
+    // user passes a key with req unqiue to it.
+    const key = req.body.key;
     await Book.findOne({ title: req.body.title }, async (err, foundBook) => {
       if (err) {
         return res.status(500).json({
@@ -21,9 +23,11 @@ module.exports = {
         });
       }
       if (foundBook) {
-        return res.status(200).json({
-          message: 'Book with this title already exists',
-        });
+        if (key === foundBook.key) {
+          return res.status(200).json({
+            message: 'Book with this title already exists',
+          });
+        }
       }
       try {
         const {
@@ -34,6 +38,7 @@ module.exports = {
           publisher,
           pages,
           rating,
+          key
         } = req.body;
 
         await Book.create({
@@ -44,6 +49,7 @@ module.exports = {
           publisher,
           pages,
           rating,
+          key
         });
         return res.status(200).json({
           message: 'Book saved in database successfully',
@@ -75,6 +81,7 @@ module.exports = {
 
   bookUpdater: async (req, res) => {
     const { title } = req.params;
+    const {key} = req.body;
     await Book.findOne({ title }, async (err, foundBook) => {
       if (err) {
         return res.status(500).json({
@@ -86,34 +93,37 @@ module.exports = {
           message: 'Book you are trying to update doesn\'t exist',
         });
       }
-      try {
-        const tempFoundBook = foundBook;
-        const tempTitle = req.body.title;
-        const {
-          author,
-          isbn,
-          category,
-          publisher,
-          pages,
-          rating,
-        } = req.body;
 
-        tempFoundBook.title = tempTitle;
-        tempFoundBook.author = author;
-        tempFoundBook.isbn = isbn;
-        tempFoundBook.category = category;
-        tempFoundBook.publisher = publisher;
-        tempFoundBook.pages = pages;
-        tempFoundBook.rating = rating;
+      if (key === foundBook.key) {
+        try {
+          const tempFoundBook = foundBook;
+          const tempTitle = req.body.title;
+          const {
+            author,
+            isbn,
+            category,
+            publisher,
+            pages,
+            rating,
+          } = req.body;
 
-        await tempFoundBook.save();
-        return res.status(200).json({
-          message: 'Book updated successfully',
-        });
-      } catch (error) {
-        return res.status(400).json({
-          message: 'An error occured while saving book in database',
-        });
+          tempFoundBook.title = tempTitle;
+          tempFoundBook.author = author;
+          tempFoundBook.isbn = isbn;
+          tempFoundBook.category = category;
+          tempFoundBook.publisher = publisher;
+          tempFoundBook.pages = pages;
+          tempFoundBook.rating = rating;
+
+          await tempFoundBook.save();
+          return res.status(200).json({
+            message: 'Book updated successfully',
+          });
+        } catch (error) {
+          return res.status(400).json({
+            message: 'An error occured while saving book in database',
+          });
+        }
       }
     }).clone();
   },
